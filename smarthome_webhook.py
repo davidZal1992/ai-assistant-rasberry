@@ -1,36 +1,49 @@
 #!/usr/bin/env python3
 """Webhook - receives Siri commands, forwards to PicoClaw bot via Telegram."""
-import json, urllib.request, asyncio
+import json, urllib.request, asyncio, uuid
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 from telethon import TelegramClient
 
 from config import API_ID, API_HASH, SESSION, BOT_TOKEN, CHAT_ID, BOT_USERNAME
+from trace import Trace
 
 
 def send_telegram(text):
-    url  = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url  = "https://api.telegram.org/bot{}/sendMessage".format(BOT_TOKEN)
     data = json.dumps({"chat_id": CHAT_ID, "text": text}).encode()
     req  = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
     try:
         urllib.request.urlopen(req, timeout=10)
     except Exception as e:
-        print(f"[TELEGRAM ERROR] {e}")
+        print("[TELEGRAM ERROR] {}".format(e))
 
 
-async def forward_to_picoclaw(text):
-    async with TelegramClient(SESSION, API_ID, API_HASH) as client:
-        await client.send_message(BOT_USERNAME, text)
-        print(f"[FORWARDED] {text}")
+async def forward_to_picoclaw(text, trace):
+    with trace.step("telethon_connect"):
+        client = TelegramClient(SESSION, API_ID, API_HASH)
+        await client.connect()
+
+    try:
+        with trace.step("send_message"):
+            await client.send_message(BOT_USERNAME, text)
+            print("[FORWARDED] {}".format(text))
+    finally:
+        with trace.step("telethon_disconnect"):
+            await client.disconnect()
 
 
 def handle(text):
-    print(f"[CMD] {text}")
+    trace = Trace(request_id=str(uuid.uuid4())[:8])
+    print("[CMD] {}".format(text))
     try:
-        asyncio.run(forward_to_picoclaw(text))
+        with trace.step("total_telegram_roundtrip"):
+            asyncio.run(forward_to_picoclaw(text, trace))
+        trace.finish("ok")
     except Exception as e:
-        print(f"[ERROR] {e}")
-        send_telegram(f"שגיאה בשליחת הפקודה: {e}")
+        print("[ERROR] {}".format(e))
+        trace.finish("error")
+        send_telegram("שגיאה בשליחת הפקודה: {}".format(e))
 
 
 class Handler(BaseHTTPRequestHandler):
