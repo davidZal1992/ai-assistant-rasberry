@@ -16,14 +16,14 @@ TUYA_REGION     = "eu"
 # Assign which is children vs parents after identifying them
 
 DEVICES = {
-    "children": {
-        "name": "נורה חדר ילדים",
+    "parents": {
+        "name": "נורה חדר הורים",
         "id":   "bf329bcc5fa941704bp17h",
         "ip":   "192.168.31.160",
         "ver":  "3.5",
     },
-    "parents": {
-        "name": "נורה חדר הורים",
+    "children": {
+        "name": "נורה חדר ילדים",
         "id":   "bfe79bdf3b20826fa86zcu",
         "ip":   "192.168.31.148",
         "ver":  "3.5",
@@ -160,12 +160,12 @@ def get_targets(room_key):
 def bulb_on(room):
     for key in get_targets(room):
         cloud_send(key, [{"code": "switch_led", "value": True}])
-        print(f"{DEVICES[key][name]}: ON ✅")
+        print(f"{DEVICES[key]['name']}: ON ✅")
 
 def bulb_off(room):
     for key in get_targets(room):
         cloud_send(key, [{"code": "switch_led", "value": False}])
-        print(f"{DEVICES[key][name]}: OFF ✅")
+        print(f"{DEVICES[key]['name']}: OFF ✅")
 
 def bulb_brightness(room, level):
     """Set brightness 1-100 (mapped to 10-1000)."""
@@ -178,7 +178,7 @@ def bulb_brightness(room, level):
             {"code": "switch_led", "value": True},
             {"code": "bright_value_v2", "value": value},
         ])
-        print(f"{DEVICES[key][name]}: BRIGHTNESS {level}%")
+        print(f"{DEVICES[key]['name']}: BRIGHTNESS {level}%")
 
 def bulb_temp(room, temp):
     """Set color temperature: warm (0) to cool (100), or keywords."""
@@ -203,7 +203,7 @@ def bulb_temp(room, temp):
             {"code": "temp_value_v2", "value": value},
         ])
         label = "חם 🔥" if pct > 60 else "קריר ❄️" if pct < 40 else "ניטרלי"
-        print(f"{DEVICES[key][name]}: TEMP {pct}% ({label})")
+        print(f"{DEVICES[key]['name']}: TEMP {pct}% ({label})")
 
 def bulb_color(room, color_name):
     """Set color by name or HSV."""
@@ -224,7 +224,7 @@ def bulb_color(room, color_name):
             {"code": "work_mode", "value": "colour"},
             {"code": "colour_data_v2", "value": hsv},
         ])
-        print(f"{DEVICES[key][name]}: COLOR {color_name} 🎨")
+        print(f"{DEVICES[key]['name']}: COLOR {color_name} 🎨")
 
 def bulb_hsv(room, h, s, v):
     """Set exact HSV color: h=0-360, s=0-100, v=0-100."""
@@ -236,7 +236,7 @@ def bulb_hsv(room, h, s, v):
             {"code": "work_mode", "value": "colour"},
             {"code": "colour_data_v2", "value": hsv},
         ])
-        print(f"{DEVICES[key][name]}: HSV h={h} s={s} v={v}")
+        print(f"{DEVICES[key]['name']}: HSV h={h} s={s} v={v}")
 
 def bulb_mode(room, mode):
     """Set work mode: white / colour / scene / music."""
@@ -248,7 +248,7 @@ def bulb_mode(room, mode):
         print(f"מצבים: white / colour / scene / music"); return
     for key in get_targets(room):
         cloud_send(key, [{"code": "work_mode", "value": mode}])
-        print(f"{DEVICES[key][name]}: MODE {mode}")
+        print(f"{DEVICES[key]['name']}: MODE {mode}")
 
 def bulb_scene(room, scene_name):
     """Apply a scene preset."""
@@ -276,7 +276,7 @@ def bulb_scene(room, scene_name):
             commands.append({"code": "colour_data_v2", "value": scene["colors"][0]})
             commands.append({"code": "bright_value_v2", "value": scene["brightness"]})
         cloud_send(key, commands)
-        print(f"{DEVICES[key][name]}: SCENE {scene_name} 🎭")
+        print(f"{DEVICES[key]['name']}: SCENE {scene_name} 🎭")
 
 def bulb_timer(room, minutes):
     """Set auto-off timer in minutes."""
@@ -289,7 +289,7 @@ def bulb_timer(room, minutes):
     secs = mins * 60
     for key in get_targets(room):
         cloud_send(key, [{"code": "countdown_1", "value": secs}])
-        print(f"{DEVICES[key][name]}: TIMER {mins} min ⏱️")
+        print(f"{DEVICES[key]['name']}: TIMER {mins} min ⏱️")
 
 def bulb_status(room):
     """Get bulb status."""
@@ -305,7 +305,7 @@ def bulb_status(room):
         colour = dps.get("colour_data_v2", "")
         countdown = dps.get("countdown_1", 0)
 
-        print(f"{DEVICES[key][name]}: {on_off}")
+        print(f"{DEVICES[key]['name']}: {on_off}")
         print(f"  mode: {mode}")
         print(f"  brightness: {bright}")
         if mode == "white":
