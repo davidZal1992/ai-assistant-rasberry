@@ -1,6 +1,23 @@
+# Secrets & credentials
 *.session
-*.log
+config.json
+tv_key.json
+room_ac_keys.json
+.env
+
+# Python
 __pycache__/
 *.pyc
-.env
-.env
+*.pyo
+venv/
+.venv/
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+heartbeat.log

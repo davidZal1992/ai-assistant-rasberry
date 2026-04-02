@@ -1,0 +1,116 @@
+---
+name: smarthome
+description: Control smart home devices. Use when the user asks to control any home device, or asks what devices are connected.
+---
+
+# Smart Home Controller
+
+## Connected Devices (exact list — no others exist)
+| # | Name | Also called | Script |
+|---|------|-------------|--------|
+| 1 | מזגן סלון (תדיראן) | מזגן מרכזי / מזגן בסלון / the main AC | smarthome.py ac |
+| 2 | מזגן חדר ילדים | מזגן ילדים | room_ac.py ילדים |
+| 3 | מזגן חדר שינה | מזגן שינה | room_ac.py שינה |
+| 4 | בוילר (דוד מים) | דוד / בוילר | smarthome.py boiler |
+| 5 | טלוויזיה (LG) | טלוויזיה / TV / סלון | tv.py |
+
+IMPORTANT: There are exactly 5 devices. "דוד" and "בוילר" are the SAME device. There is NO separate "דוד" device.
+
+## When asked "what devices do you have?" / "אילו מכשירים יש לך?"
+Reply with this exact format:
+```
+המכשירים המחוברים אלי:
+1. 🌀 מזגן סלון (תדיראן)
+2. ❄️ מזגן חדר ילדים
+3. ❄️ מזגן חדר שינה
+4. 🚿 בוילר (דוד מים)
+5. 📺 טלוויזיה (LG)
+```
+
+## "כבה הכל" / "Shut down everything" — ALL 5 devices
+Run this single command:
+`python3 /home/david/.picoclaw/workspace/smarthome.py ac off && python3 /home/david/.picoclaw/workspace/room_ac.py all off && python3 /home/david/.picoclaw/workspace/smarthome.py boiler off && python3 /home/david/.picoclaw/workspace/tv.py off`
+
+After running, reply with this checklist:
+```
+כיביתי את כל המכשירים ✅
+✓ מזגן סלון — כבוי
+✓ מזגן חדר ילדים — כבוי
+✓ מזגן חדר שינה — כבוי
+✓ בוילר — כבוי
+✓ טלוויזיה — כבוי
+```
+
+## CRITICAL RULES
+1. Use full absolute paths: /home/david/.picoclaw/workspace/
+2. Central AC: each setting is a SEPARATE call, chained with &&
+3. NEVER use key presses for TV channels — ALWAYS use: tv.py channel N
+4. "דוד" = "בוילר" = same device → smarthome.py boiler
+5. If user says "מזגן" with no room → ask: סלון / חדר ילדים / חדר שינה / הכל?
+
+## Salon AC Commands (מזגן סלון / מזגן מרכזי / main AC — all mean the same)
+- `python3 /home/david/.picoclaw/workspace/smarthome.py ac on`
+- `python3 /home/david/.picoclaw/workspace/smarthome.py ac off`
+- `python3 /home/david/.picoclaw/workspace/smarthome.py ac status`
+- `python3 /home/david/.picoclaw/workspace/smarthome.py ac temp 24`   ← 16-32C
+- `python3 /home/david/.picoclaw/workspace/smarthome.py ac mode hot`  ← hot/cold/auto/wet/wind
+- `python3 /home/david/.picoclaw/workspace/smarthome.py ac fan low`   ← low/middle/high/auto
+
+## Room AC Commands (מזגן חדרים)
+Rooms: ילדים | שינה | all
+- `python3 /home/david/.picoclaw/workspace/room_ac.py ילדים on`
+- `python3 /home/david/.picoclaw/workspace/room_ac.py ילדים off`
+- `python3 /home/david/.picoclaw/workspace/room_ac.py ילדים temp 23`
+- `python3 /home/david/.picoclaw/workspace/room_ac.py ילדים mode heat`  ← heat/cool/auto/dry/fan
+- `python3 /home/david/.picoclaw/workspace/room_ac.py ילדים fan low`    ← low/medium/high/auto
+- `python3 /home/david/.picoclaw/workspace/room_ac.py שינה on`
+- `python3 /home/david/.picoclaw/workspace/room_ac.py שינה off`
+- `python3 /home/david/.picoclaw/workspace/room_ac.py שינה temp 22`
+- `python3 /home/david/.picoclaw/workspace/room_ac.py all off`
+- `python3 /home/david/.picoclaw/workspace/room_ac.py all status`
+
+## Boiler Commands (בוילר / דוד / דוד מים — all the same device)
+- `python3 /home/david/.picoclaw/workspace/smarthome.py boiler on`
+- `python3 /home/david/.picoclaw/workspace/smarthome.py boiler off`
+- `python3 /home/david/.picoclaw/workspace/smarthome.py boiler status`
+- `python3 /home/david/.picoclaw/workspace/smarthome.py boiler timer 40`
+
+## TV Commands (טלוויזיה LG)
+- `python3 /home/david/.picoclaw/workspace/tv.py on`
+- `python3 /home/david/.picoclaw/workspace/tv.py off`
+- `python3 /home/david/.picoclaw/workspace/tv.py status`
+- `python3 /home/david/.picoclaw/workspace/tv.py volume 20`
+- `python3 /home/david/.picoclaw/workspace/tv.py volume up`
+- `python3 /home/david/.picoclaw/workspace/tv.py volume down`
+- `python3 /home/david/.picoclaw/workspace/tv.py mute`
+- `python3 /home/david/.picoclaw/workspace/tv.py app netflix`
+- `python3 /home/david/.picoclaw/workspace/tv.py app youtube`
+- `python3 /home/david/.picoclaw/workspace/tv.py app spotify`
+- `python3 /home/david/.picoclaw/workspace/tv.py app prime`
+- `python3 /home/david/.picoclaw/workspace/tv.py app livetv`
+- `python3 /home/david/.picoclaw/workspace/tv.py channel 12`   ← ALWAYS use channel N, never key presses
+- `python3 /home/david/.picoclaw/workspace/tv.py channel up`
+- `python3 /home/david/.picoclaw/workspace/tv.py channel down`
+- `python3 /home/david/.picoclaw/workspace/tv.py key back`
+- `python3 /home/david/.picoclaw/workspace/tv.py key home`
+
+## Examples
+
+"הדלק מזגן סלון חום 27" / "הדלק מזגן מרכזי חום 27":
+`python3 /home/david/.picoclaw/workspace/smarthome.py ac on && python3 /home/david/.picoclaw/workspace/smarthome.py ac mode hot && python3 /home/david/.picoclaw/workspace/smarthome.py ac temp 27`
+
+"הדלק מזגן חדר ילדים קר 22":
+`python3 /home/david/.picoclaw/workspace/room_ac.py ילדים on && python3 /home/david/.picoclaw/workspace/room_ac.py ילדים mode cool && python3 /home/david/.picoclaw/workspace/room_ac.py ילדים temp 22`
+
+"הדלק דוד 35 דקות":
+`python3 /home/david/.picoclaw/workspace/smarthome.py boiler timer 35`
+
+"עבור לערוץ 12":
+`python3 /home/david/.picoclaw/workspace/tv.py channel 12`
+
+"כבה הכל":
+`python3 /home/david/.picoclaw/workspace/smarthome.py ac off && python3 /home/david/.picoclaw/workspace/room_ac.py all off && python3 /home/david/.picoclaw/workspace/smarthome.py boiler off && python3 /home/david/.picoclaw/workspace/tv.py off`
+
+## Rules
+- Always reply in the same language the user used
+- After executing, report what was done
