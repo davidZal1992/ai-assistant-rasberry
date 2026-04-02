@@ -49,8 +49,7 @@ COLORS = {
     "סגול":    {"h": 270, "s": 1000, "v": 1000},
     "pink":    {"h": 330, "s": 800,  "v": 1000},
     "ורוד":    {"h": 330, "s": 800,  "v": 1000},
-    "white":   {"h": 0,   "s": 0,    "v": 1000},
-    "לבן":     {"h": 0,   "s": 0,    "v": 1000},
+    # "white" and "לבן" handled specially in bulb_color — switches to white mode
     # Mood colors
     "warm":       {"h": 30,  "s": 600, "v": 800},
     "חם":         {"h": 30,  "s": 600, "v": 800},
@@ -237,6 +236,20 @@ def bulb_temp(room, temp):
 def bulb_color(room, color_name, brightness=None):
     """Set color by name or HSV, with optional brightness (1-100)."""
     color_name_lower = color_name.lower()
+    
+    # "white" / "לבן" = switch to real white light mode (not HSV white)
+    if color_name_lower in ("white", "לבן"):
+        brt = max(10, int(brightness) * 10) if brightness else 1000
+        for key in get_targets(room):
+            cloud_send(key, [
+                {"code": "switch_led", "value": True},
+                {"code": "work_mode", "value": "white"},
+                {"code": "bright_value_v2", "value": brt},
+                {"code": "temp_value_v2", "value": 500},
+            ])
+            print(f"{DEVICES[key]['name']}: WHITE LIGHT ☀️")
+        return
+    
     if color_name_lower in COLORS:
         hsv = dict(COLORS[color_name_lower])  # copy to avoid mutating preset
     else:
