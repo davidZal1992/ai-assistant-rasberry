@@ -3,6 +3,8 @@
 import sys
 import json
 import re
+import os
+import time
 import requests
 
 TOKEN_FILE = "/home/david/.picoclaw/workspace/tami4_token.json"
@@ -27,26 +29,64 @@ DRINKS = {
     "hot":       {"id": "1070d1c2-ee5c-45bf-88ce-dcd2e76f7d14", "name": "קנקן חם",    "vol": "1205ml"},
 }
 
-def load_refresh_token():
-    with open(TOKEN_FILE) as f:
-        return json.load(f)["refresh_token"]
+def load_tokens():
+    """Load saved tokens. Returns dict with refresh_token, access_token, expires_at."""
+    try:
+        with open(TOKEN_FILE) as f:
+            return json.load(f)
+    except:
+        return {}
 
-def save_refresh_token(token):
+def save_tokens(data):
+    """Save tokens — NEVER saves null values over existing ones."""
+    existing = load_tokens()
+    # Only update fields that have actual values
+    for key in ["refresh_token", "access_token", "expires_at"]:
+        if key in data and data[key] is not None:
+            existing[key] = data[key]
     with open(TOKEN_FILE, "w") as f:
-        json.dump({"refresh_token": token}, f)
+        json.dump(existing, f, indent=2)
 
 def get_access_token():
-    refresh_token = load_refresh_token()
+    """Get a valid access token, refreshing if needed."""
+    tokens = load_tokens()
+    
+    # Check if we have a cached access token that's still valid
+    access_token = tokens.get("access_token")
+    expires_at = tokens.get("expires_at", 0)
+    if access_token and time.time() < expires_at - 60:  # 60s buffer
+        return access_token
+    
+    # Need to refresh
+    refresh_token = tokens.get("refresh_token")
+    if not refresh_token:
+        print("ERROR: No refresh token. Run: python3 /tmp/tami4_auth2.py to re-authenticate")
+        return None
+    
     r = requests.post(f"{BASE_AUTH}/api/v1/auth/token/refresh",
         headers={"X-Api-Key": API_KEY, "Content-Type": "application/json"},
-        json={"refreshToken": refresh_token})
+        json={"refreshToken": refresh_token},
+        timeout=10)
+    
     if r.status_code != 200:
-        print(f"Auth error: {r.status_code} {r.text}")
+        print(f"Auth refresh failed: {r.status_code} {r.text}")
+        print("Token may have expired. Run: python3 /tmp/tami4_auth2.py to re-authenticate")
         return None
+    
     data = r.json()
-    if "refreshToken" in data:
-        save_refresh_token(data["refreshToken"])
-    return data["accessToken"]
+    new_access = data.get("accessToken")
+    new_refresh = data.get("refreshToken")
+    
+    # Save tokens — only update what we got back
+    save_data = {"access_token": new_access}
+    if new_access:
+        # Access tokens typically last 24h, cache for 23h
+        save_data["expires_at"] = time.time() + 82800
+    if new_refresh:
+        save_data["refresh_token"] = new_refresh
+    save_tokens(save_data)
+    
+    return new_access
 
 def api_headers():
     token = get_access_token()
@@ -60,7 +100,7 @@ def tami_boil():
     """Start boiling water."""
     headers = api_headers()
     if not headers: return
-    r = requests.post(f"{BASE_API}/api/v1/device/{DEVICE_ID}/startBoiling", headers=headers)
+    r = requests.post(f"{BASE_API}/api/v1/device/{DEVICE_ID}/startBoiling", headers=headers, timeout=10)
     if r.status_code == 200:
         print("Tami4: BOILING WATER 🔥")
     elif r.status_code == 502:
@@ -78,7 +118,7 @@ def tami_drink(drink_key):
     drink = DRINKS[drink_key_lower]
     headers = api_headers()
     if not headers: return
-    r = requests.post(f"{BASE_API}/api/v1/device/{DEVICE_ID}/prepareDrink/{drink['id']}", headers=headers)
+    r = requests.post(f"{BASE_API}/api/v1/device/{DEVICE_ID}/prepareDrink/{drink['id']}", headers=headers, timeout=10)
     if r.status_code == 200:
         print(f"Tami4: PREPARING {drink['name']} ({drink['vol']}) ☕")
     else:
@@ -88,7 +128,7 @@ def tami_status():
     """Get device status."""
     headers = api_headers()
     if not headers: return
-    r = requests.get(f"{BASE_API}/api/v3/customer/mainPage/{PSN}", headers=headers)
+    r = requests.get(f"{BASE_API}/api/v3/customer/mainPage/{PSN}", headers=headers, timeout=10)
     if r.status_code != 200:
         print(f"Tami4: Error {r.status_code}")
         return
@@ -100,7 +140,6 @@ def tami_status():
     print(f"Tami4 Edge: {connected}")
     print(f"  firmware: {device.get('deviceFirmware', '?')}")
     
-    # Filter info
     filt = dynamic.get("filterInfo", {})
     if filt:
         liters = filt.get("milliLittersPassed", 0) / 1000
@@ -111,7 +150,6 @@ def tami_status():
             dt = datetime.fromtimestamp(replacement / 1000)
             print(f"  filter replacement: {dt.strftime('%Y-%m-%d')}")
     
-    # UV info
     uv = dynamic.get("uvInfo", {})
     if uv:
         replacement = uv.get("upcomingReplacement")
@@ -120,7 +158,6 @@ def tami_status():
             dt = datetime.fromtimestamp(replacement / 1000)
             print(f"  UV replacement: {dt.strftime('%Y-%m-%d')}")
     
-    # Drinks
     drinks = data.get("drinks", [])
     if drinks:
         print("  drinks:")
@@ -132,7 +169,7 @@ def tami_drinks():
     """List available drinks."""
     headers = api_headers()
     if not headers: return
-    r = requests.get(f"{BASE_API}/api/v3/customer/mainPage/{PSN}", headers=headers)
+    r = requests.get(f"{BASE_API}/api/v3/customer/mainPage/{PSN}", headers=headers, timeout=10)
     if r.status_code != 200:
         print(f"Error: {r.status_code}")
         return
