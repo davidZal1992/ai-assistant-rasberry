@@ -168,16 +168,45 @@ def bulb_off(room):
         print(f"{DEVICES[key]['name']}: OFF ✅")
 
 def bulb_brightness(room, level):
-    """Set brightness 1-100 (mapped to 10-1000)."""
+    """Set brightness 1-100 (mapped to 10-1000). Preserves current color/mode."""
     level = int(level)
     if not 1 <= level <= 100:
         print("בהירות חייבת להיות בין 1 ל-100"); return
     value = max(10, level * 10)
     for key in get_targets(room):
-        cloud_send(key, [
-            {"code": "switch_led", "value": True},
-            {"code": "bright_value_v2", "value": value},
-        ])
+        # Check current mode to preserve color if in colour mode
+        try:
+            result = cloud_status(key)
+            dps = {s["code"]: s["value"] for s in result.get("result", [])}
+            current_mode = dps.get("work_mode", "white")
+        except:
+            current_mode = "white"
+        
+        if current_mode == "colour":
+            # In colour mode, adjust brightness via HSV value
+            try:
+                import json as _json
+                colour = dps.get("colour_data_v2", "")
+                if isinstance(colour, str) and colour:
+                    hsv = _json.loads(colour)
+                else:
+                    hsv = colour if isinstance(colour, dict) else {"h": 0, "s": 1000, "v": 1000}
+                hsv["v"] = value
+                cloud_send(key, [
+                    {"code": "switch_led", "value": True},
+                    {"code": "work_mode", "value": "colour"},
+                    {"code": "colour_data_v2", "value": hsv},
+                ])
+            except:
+                cloud_send(key, [
+                    {"code": "switch_led", "value": True},
+                    {"code": "bright_value_v2", "value": value},
+                ])
+        else:
+            cloud_send(key, [
+                {"code": "switch_led", "value": True},
+                {"code": "bright_value_v2", "value": value},
+            ])
         print(f"{DEVICES[key]['name']}: BRIGHTNESS {level}%")
 
 def bulb_temp(room, temp):
@@ -205,11 +234,11 @@ def bulb_temp(room, temp):
         label = "חם 🔥" if pct > 60 else "קריר ❄️" if pct < 40 else "ניטרלי"
         print(f"{DEVICES[key]['name']}: TEMP {pct}% ({label})")
 
-def bulb_color(room, color_name):
-    """Set color by name or HSV."""
+def bulb_color(room, color_name, brightness=None):
+    """Set color by name or HSV, with optional brightness (1-100)."""
     color_name_lower = color_name.lower()
     if color_name_lower in COLORS:
-        hsv = COLORS[color_name_lower]
+        hsv = dict(COLORS[color_name_lower])  # copy to avoid mutating preset
     else:
         print(f"צבע לא מוכר: {color_name}")
         print("צבעים זמינים: " + ", ".join(
@@ -218,13 +247,17 @@ def bulb_color(room, color_name):
             k for k in COLORS if any(c in k for c in "אבגדהוזחטיכלמנסעפצקרשת")))
         return
 
+    if brightness is not None:
+        hsv["v"] = max(10, int(brightness) * 10)
+
     for key in get_targets(room):
         cloud_send(key, [
             {"code": "switch_led", "value": True},
             {"code": "work_mode", "value": "colour"},
             {"code": "colour_data_v2", "value": hsv},
         ])
-        print(f"{DEVICES[key]['name']}: COLOR {color_name} 🎨")
+        brt_str = f" ({brightness}%)" if brightness else ""
+        print(f"{DEVICES[key]['name']}: COLOR {color_name}{brt_str} 🎨")
 
 def bulb_hsv(room, h, s, v):
     """Set exact HSV color: h=0-360, s=0-100, v=0-100."""
