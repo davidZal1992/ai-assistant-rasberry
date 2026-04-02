@@ -1,6 +1,6 @@
 ---
 name: tami4
-description: שליטה בבר המים Tami4 Edge — הרתחה, הכנת משקאות, סטטוס פילטר ו-UV
+description: שליטה בבר המים Tami4 Edge — הרתחת מים, סטטוס פילטר ו-UV
 metadata: {"nanobot":{"emoji":"💧"}}
 ---
 
@@ -12,53 +12,15 @@ metadata: {"nanobot":{"emoji":"💧"}}
 
 כל הפקודות מריצות את הסקריפט דרך exec. **אסור להשתמש ב-echo.**
 
-### הרתחת מים
+### הרתחת מים 🔥
 ```
 python3 /home/david/.picoclaw/workspace/tami4.py boil
 ```
 
-### הכנת משקה
+### סטטוס (פילטר, UV, חיבור)
 ```
-python3 /home/david/.picoclaw/workspace/tami4.py coffee          # קפה (251ml)
-python3 /home/david/.picoclaw/workspace/tami4.py bottle          # בקבוק (306ml)
-python3 /home/david/.picoclaw/workspace/tami4.py cold            # ליטר וחצי (1234ml)
-python3 /home/david/.picoclaw/workspace/tami4.py teapot          # קנקן חם (1205ml)
+python3 /home/david/.picoclaw/workspace/tami4.py status
 ```
-
-גם בעברית:
-```
-python3 /home/david/.picoclaw/workspace/tami4.py קפה
-python3 /home/david/.picoclaw/workspace/tami4.py בקבוק
-python3 /home/david/.picoclaw/workspace/tami4.py ליטר
-python3 /home/david/.picoclaw/workspace/tami4.py קנקן
-python3 /home/david/.picoclaw/workspace/tami4.py water          # כוס מים קר (260ml)
-python3 /home/david/.picoclaw/workspace/tami4.py כוס            # כוס מים קר (260ml)
-python3 /home/david/.picoclaw/workspace/tami4.py מים            # כוס מים קר (260ml)
-```
-
-או עם פקודת drink:
-```
-python3 /home/david/.picoclaw/workspace/tami4.py drink coffee
-python3 /home/david/.picoclaw/workspace/tami4.py drink קפה
-python3 /home/david/.picoclaw/workspace/tami4.py drink bottle
-python3 /home/david/.picoclaw/workspace/tami4.py drink teapot
-```
-
-### סטטוס ומידע
-```
-python3 /home/david/.picoclaw/workspace/tami4.py status          # סטטוס מכשיר, פילטר, UV
-python3 /home/david/.picoclaw/workspace/tami4.py drinks          # רשימת משקאות
-```
-
-## משקאות זמינים
-
-| שם | פקודה | נפח |
-|----|-------|------|
-| קפה | `coffee` / `קפה` | 251ml |
-| בקבוק | `bottle` / `בקבוק` | 306ml |
-| ליטר וחצי (קנקן קר) | `cold` / `ליטר` / `קנקן-קר` | 1234ml |
-| קנקן חם | `teapot` / `קנקן` / `קנקן-חם` / `hot` | 1205ml |
-| כוס מים קר | `water` / `cup` / `כוס` / `מים` / `מים-קרים` | 260ml |
 
 ## דוגמאות לבקשות בעברית ומה להריץ
 
@@ -66,22 +28,24 @@ python3 /home/david/.picoclaw/workspace/tami4.py drinks          # רשימת מ
 |------|-------|
 | "תרתיח מים" | `tami4.py boil` |
 | "הרתח לי מים" | `tami4.py boil` |
-| "תכין לי קפה" | `tami4.py coffee` |
-| "תמלא בקבוק" | `tami4.py bottle` |
-| "תכין קנקן חם" | `tami4.py teapot` |
-| "מלא קנקן קר" | `tami4.py cold` |
-| "מה מצב הפילטר?" | `tami4.py status` |
-| "מתי צריך להחליף UV?" | `tami4.py status` |
-| "מה המשקאות שיש?" | `tami4.py drinks` |
 | "מים חמים" | `tami4.py boil` |
-| "כוס מים קרים" | `tami4.py water` |
-| "תמלא כוס מים" | `tami4.py cup` |
-| "מים קרים" | `tami4.py מים` |
+| "תכין מים חמים" | `tami4.py boil` |
+| "בוא נשתה קפה" / "אני רוצה קפה" | `tami4.py boil` (הרתחה כדי שהמים יהיו מוכנים) |
+| "מה מצב הטמי?" | `tami4.py status` |
+| "מה מצב בר המים?" | `tami4.py status` |
+| "מתי צריך להחליף פילטר?" | `tami4.py status` |
+| "מתי להחליף UV?" | `tami4.py status` |
+| "סטטוס טמי" | `tami4.py status` |
+
+## מידע חשוב
+
+- הרתחה מרחוק = התכונה העיקרית. אפשר להפעיל מהספה/מיטה והמים יהיו חמים כשמגיעים למטבח.
+- **מזיגת מים דורשת לחיצה פיזית** על הברז — אי אפשר למזוג מרחוק.
+- אם המשתמש מבקש "כוס מים" → הסבר שאפשר רק להרתיח מרחוק, המזיגה דורשת לחיצה פיזית.
 
 ## כללים
 
-1. פקודה ברורה → exec מיידי. לא לקרוא קבצים. לא לחקור.
-2. **אסור** לדמות פקודה עם echo — תמיד להריץ את הסקריפט האמיתי.
+1. פקודה ברורה → exec מיידי.
+2. **אסור** לדמות פקודה עם echo.
 3. אחרי כל exec, לדווח את הפלט האמיתי.
-4. "מים" סתם → שאול: הרתחה או משקה מסוים?
-5. "תכין" ללא ציון משקה → שאול: קפה / בקבוק / קנקן חם / ליטר וחצי?
+4. "קפה" / "תה" / "מים חמים" → הרתחה (`boil`).
