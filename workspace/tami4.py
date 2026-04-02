@@ -26,6 +26,13 @@ DRINKS = {
     "teapot":    {"id": "1070d1c2-ee5c-45bf-88ce-dcd2e76f7d14", "name": "קנקן חם",    "vol": "1205ml"},
     "קנקן":      {"id": "1070d1c2-ee5c-45bf-88ce-dcd2e76f7d14", "name": "קנקן חם",    "vol": "1205ml"},
     "קנקן-חם":  {"id": "1070d1c2-ee5c-45bf-88ce-dcd2e76f7d14", "name": "קנקן חם",    "vol": "1205ml"},
+    "coldcup":   {"id": "07a3cb6d-e84b-4bea-adf3-6b89bbbf09bb", "name": "כוס מים קר",  "vol": "260ml"},
+    "כוס":      {"id": "07a3cb6d-e84b-4bea-adf3-6b89bbbf09bb", "name": "כוס מים קר",  "vol": "260ml"},
+    "כוס-קר":  {"id": "07a3cb6d-e84b-4bea-adf3-6b89bbbf09bb", "name": "כוס מים קר",  "vol": "260ml"},
+    "מים":      {"id": "07a3cb6d-e84b-4bea-adf3-6b89bbbf09bb", "name": "כוס מים קר",  "vol": "260ml"},
+    "מים-קרים": {"id": "07a3cb6d-e84b-4bea-adf3-6b89bbbf09bb", "name": "כוס מים קר",  "vol": "260ml"},
+    "water":     {"id": "07a3cb6d-e84b-4bea-adf3-6b89bbbf09bb", "name": "כוס מים קר",  "vol": "260ml"},
+    "cup":       {"id": "07a3cb6d-e84b-4bea-adf3-6b89bbbf09bb", "name": "כוס מים קר",  "vol": "260ml"},
     "hot":       {"id": "1070d1c2-ee5c-45bf-88ce-dcd2e76f7d14", "name": "קנקן חם",    "vol": "1205ml"},
 }
 

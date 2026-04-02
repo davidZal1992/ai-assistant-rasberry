@@ -31,6 +31,9 @@ python3 /home/david/.picoclaw/workspace/tami4.py קפה
 python3 /home/david/.picoclaw/workspace/tami4.py בקבוק
 python3 /home/david/.picoclaw/workspace/tami4.py ליטר
 python3 /home/david/.picoclaw/workspace/tami4.py קנקן
+python3 /home/david/.picoclaw/workspace/tami4.py water          # כוס מים קר (260ml)
+python3 /home/david/.picoclaw/workspace/tami4.py כוס            # כוס מים קר (260ml)
+python3 /home/david/.picoclaw/workspace/tami4.py מים            # כוס מים קר (260ml)
 ```
 
 או עם פקודת drink:
@@ -55,6 +58,7 @@ python3 /home/david/.picoclaw/workspace/tami4.py drinks          # רשימת מ
 | בקבוק | `bottle` / `בקבוק` | 306ml |
 | ליטר וחצי (קנקן קר) | `cold` / `ליטר` / `קנקן-קר` | 1234ml |
 | קנקן חם | `teapot` / `קנקן` / `קנקן-חם` / `hot` | 1205ml |
+| כוס מים קר | `water` / `cup` / `כוס` / `מים` / `מים-קרים` | 260ml |
 
 ## דוגמאות לבקשות בעברית ומה להריץ
 
@@ -70,6 +74,9 @@ python3 /home/david/.picoclaw/workspace/tami4.py drinks          # רשימת מ
 | "מתי צריך להחליף UV?" | `tami4.py status` |
 | "מה המשקאות שיש?" | `tami4.py drinks` |
 | "מים חמים" | `tami4.py boil` |
+| "כוס מים קרים" | `tami4.py water` |
+| "תמלא כוס מים" | `tami4.py cup` |
+| "מים קרים" | `tami4.py מים` |
 
 ## כללים
 
