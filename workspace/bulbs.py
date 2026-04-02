@@ -94,6 +94,12 @@ SCENES = {
     "שינה":       "sleep",
     "rainbow":    "rainbow",
     "קשת":        "rainbow",
+    "baby":       "baby_sleep",
+    "תינוק":      "baby_sleep",
+    "baby-sleep":  "baby_sleep",
+    "שינה-תינוק": "baby_sleep",
+    "לילה-טוב":   "baby_sleep",
+    "goodnight":   "baby_sleep",
 }
 
 # Scene implementations (scene_data_v2 format)
@@ -112,6 +118,9 @@ SCENE_DATA = {
     "focus":       {"brightness": 1000, "temp": 200, "mode": "white"},
     "energy":      {"brightness": 1000, "temp": 0,   "mode": "white"},
     "sleep":       {"brightness": 30,   "temp": 1000, "mode": "white"},
+    "baby_sleep":  {"brightness": 50, "mode": "colour", "colors": [
+        {"h": 10, "s": 1000, "v": 50},
+    ]},
     "rainbow":     {"brightness": 1000, "mode": "colour", "colors": [
         {"h": 0, "s": 1000, "v": 1000}, {"h": 60, "s": 1000, "v": 1000},
         {"h": 120, "s": 1000, "v": 1000}, {"h": 180, "s": 1000, "v": 1000},
