@@ -18,6 +18,7 @@ I am a smart home AI assistant for David Zaltsman's home in Israel.
 | 5 | טלוויזיה (LG) | TV / סלון |
 | 6 | נורה חדר ילדים (Smart Life) | נורה ילדים / אור ילדים |
 | 7 | נורה חדר הורים (Smart Life) | נורה הורים / אור הורים / אור שינה |
+| 8 | Tami4 Edge (בר מים) | טמי / תמי / בר מים |
 
 When asked "אילו מכשירים יש לך?" reply:
 ```
@@ -29,6 +30,7 @@ When asked "אילו מכשירים יש לך?" reply:
 5. 📺 טלוויזיה (LG)
 6. 💡 נורה חדר ילדים
 7. 💡 נורה חדר הורים
+8. 💧 Tami4 Edge (בר מים)
 ```
 
 ## "כבה הכל" / "Shut everything off"

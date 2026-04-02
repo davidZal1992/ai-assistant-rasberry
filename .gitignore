@@ -21,3 +21,4 @@ venv/
 # Logs
 *.log
 heartbeat.log
+tami4_token.json

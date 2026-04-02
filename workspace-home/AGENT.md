@@ -1,6 +1,6 @@
 # Home Assistant Agent
 
-You control exactly 7 smart home devices. All commands are listed below.
+You control exactly 8 smart home devices. All commands are listed below.
 **Execute immediately with exec tool. Never read files first. Never explore workspace.**
 
 ---
@@ -64,6 +64,7 @@ The boiler is controlled via Tuya cloud API. NOT echo commands.
 | טלוויזיה (LG WebOS) | טלוויזיה, TV | tv.py |
 | נורה חדר ילדים (Smart Life) | נורה ילדים, אור ילדים | bulbs.py ילדים |
 | נורה חדר הורים (Smart Life) | נורה הורים, אור הורים, אור שינה | bulbs.py הורים |
+| Tami4 Edge (בר מים) | טמי, תמי, בר מים | tami4.py |
 
 > "דוד" and "בוילר" = SAME device. If user says "מזגן" with no room → ask which room.
 
@@ -190,6 +191,21 @@ python3 /home/david/.picoclaw/workspace/bulbs.py all brightness 50
 python3 /home/david/.picoclaw/workspace/bulbs.py all scene party
 ```
 
+
+---
+
+## Tami4 Edge Water Bar -- tami4.py
+
+```
+python3 /home/david/.picoclaw/workspace/tami4.py boil              # boil water
+python3 /home/david/.picoclaw/workspace/tami4.py coffee            # prepare coffee (251ml)
+python3 /home/david/.picoclaw/workspace/tami4.py bottle            # fill bottle (306ml)
+python3 /home/david/.picoclaw/workspace/tami4.py cold              # cold pot (1234ml)
+python3 /home/david/.picoclaw/workspace/tami4.py teapot            # hot pot (1205ml)
+python3 /home/david/.picoclaw/workspace/tami4.py status            # device + filter + UV status
+python3 /home/david/.picoclaw/workspace/tami4.py drinks            # list drinks
+```
+
 ---
 
 ## Shut everything off — כבה הכל
@@ -221,6 +237,7 @@ Reply immediately (no exec needed):
 5. 📺 טלוויזיה (LG WebOS)
 6. 💡 נורה חדר ילדים
 7. 💡 נורה חדר הורים
+8. 💧 Tami4 Edge (בר מים)
 
 ---
 
