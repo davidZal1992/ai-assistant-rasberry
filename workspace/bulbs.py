@@ -106,7 +106,9 @@ SCENES = {
 
 # Scene implementations (scene_data_v2 format)
 SCENE_DATA = {
-    "night_light": {"brightness": 50,  "temp": 1000, "mode": "white"},
+    "night_light": {"brightness": 50, "mode": "colour", "colors": [
+        {"h": 10, "s": 1000, "v": 50},
+    ]},
     "reading":     {"brightness": 900, "temp": 500,  "mode": "white"},
     "relax":       {"brightness": 400, "temp": 800,  "mode": "white"},
     "party":       {"brightness": 1000, "mode": "colour", "colors": [
