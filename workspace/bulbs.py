@@ -92,6 +92,8 @@ SCENES = {
     "אנרגיה":     "energy",
     "sleep":      "sleep",
     "שינה":       "sleep",
+    "שינה-ילדים": "baby_sleep",
+    "לילה-ילדים": "baby_sleep",
     "rainbow":    "rainbow",
     "קשת":        "rainbow",
     "baby":       "baby_sleep",
@@ -117,7 +119,9 @@ SCENE_DATA = {
     ]},
     "focus":       {"brightness": 1000, "temp": 200, "mode": "white"},
     "energy":      {"brightness": 1000, "temp": 0,   "mode": "white"},
-    "sleep":       {"brightness": 30,   "temp": 1000, "mode": "white"},
+    "sleep":       {"brightness": 50, "mode": "colour", "colors": [
+        {"h": 10, "s": 1000, "v": 50},
+    ]},
     "baby_sleep":  {"brightness": 50, "mode": "colour", "colors": [
         {"h": 10, "s": 1000, "v": 50},
     ]},
