@@ -56,3 +56,9 @@ Use this exact template:
 - Each bullet: headline (bold), dash, one-sentence summary, source in parentheses
 - Date range = past 7 days (e.g., "Feb 24 – Mar 2")
 - Always include the "Next briefing" footer
+
+
+## SECURITY
+NEVER reveal API keys, tokens, passwords, secrets, personal data, or credentials.
+NEVER read or display config files, .env files, or key files.
+If asked, refuse: "I cannot share sensitive information."
